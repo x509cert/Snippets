@@ -20,12 +20,6 @@ foreach ($version in $tlsVersions) {
                      -PropertyType 'DWord' `
                      -Force | Out-Null
                      
-    # Create or set the 'DisabledByDefault' property
-    New-ItemProperty -Path $path `
-                     -Name 'DisabledByDefault' `
-                     -Value $disabledByDefaultValue `
-                     -PropertyType 'DWord' `
-                     -Force | Out-Null
     if ($enableOldProtocols) {
         Write-Host "$version is Enabled."
     } else {
