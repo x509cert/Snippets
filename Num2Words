@@ -1,0 +1,72 @@
+Option Explicit
+
+Function NumberToWords(ByVal Number As Double) As String
+    'Ensure variables are appropriately defined
+    Dim Units As Variant, Teens As Variant, Tens As Variant, Levels As Variant
+    Dim Part As Double
+    Dim Result As String
+    Dim i As Integer
+    
+    'Arrays for number words
+    Units = Array("", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine")
+    Teens = Array("Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen")
+    Tens = Array("", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety")
+    Levels = Array("", "Thousand", "Million", "Billion", "Trillion", "Quadrillion", "Quintillion", "Sextillion")
+    
+    'Handle special cases
+    If Number = 0 Then
+        NumberToWords = "Zero"
+        Exit Function
+    ElseIf Number < 0 Then
+        NumberToWords = "Minus " & NumberToWords(-Number)
+        Exit Function
+    ElseIf Number < 1000000 Then
+        NumberToWords = "" ' Returns an empty string for numbers less than 1 million
+        Exit Function
+    End If
+    
+    'Iterate over each level, starting from "Million"
+    For i = UBound(Levels) To 2 Step -1 ' Start from index 2 ("Million") skipping "Thousand" and below
+        Part = Int(Number / (10 ^ (i * 3)))
+        If Part > 0 Then
+            Number = Number - Part * (10 ^ (i * 3))
+            ' Ensure space is added before appending the level descriptor
+            Result = Result & ProcessPart(Part) & " " & Levels(i) & " "
+        End If
+    Next i
+    
+    'Trim and finalize the result
+    NumberToWords = Trim(Result)
+End Function
+
+Function ProcessPart(ByVal Number As Double) As String
+    Dim Units As Variant, Teens As Variant, Tens As Variant
+    Dim Result As String
+    
+    'Define number words
+    Units = Array("", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine")
+    Teens = Array("Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen")
+    Tens = Array("", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety")
+    
+    'Process hundreds
+    If Number >= 100 Then
+        Result = Units(Int(Number / 100)) & " Hundred "
+        Number = Number Mod 100
+    End If
+    
+    'Process tens and teens
+    If Number >= 20 Then
+        Result = Result & Tens(Int(Number / 10)) & " "
+        Number = Number Mod 10
+    ElseIf Number >= 10 Then
+        Result = Result & Teens(Number - 10) & " "
+        Number = 0
+    End If
+    
+    'Process units
+    If Number > 0 Then
+        Result = Result & Units(Number) & " "
+    End If
+    
+    ProcessPart = Trim(Result)
+End Function
