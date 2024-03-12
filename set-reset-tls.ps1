@@ -2,7 +2,7 @@
 Set-StrictMode -Version Latest
 
 $base = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\'
-$protocols = @{
+$protocols = [ordered]@{
     "SSL 2.0" = $false
     "SSL 3.0" = $false
     "TLS 1.0" = $true
