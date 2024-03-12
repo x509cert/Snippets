@@ -1,29 +1,27 @@
 # Learn more at https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings?tabs=diffie-hellman
 Set-StrictMode -Version Latest
 
-# Set to $true to enable TLS 1.0, 1.1 and 1.2
-$enableOldProtocols = $true
-
 $base = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\'
-$tlsVersions = @('TLS 1.0', 'TLS 1.1')
+$protocols = @{
+    "SSL 2.0" = $false
+    "SSL 3.0" = $false
+    "TLS 1.0" = $true
+    "TLS 1.1" = $false
+    "TLS 1.2" = $true
+    "TLS 1.3" = $true
+}
 
-$enabledValue = if ($enableOldProtocols) { 1 } else { 0 }
+foreach ($version in $protocols.Keys) {
 
-foreach ($version in $tlsVersions) {
+    $enabledValue = $protocols[$version]
     $path = $base + $version + '\Server'
-    New-Item $path -Force | Out-Null
 
-    # Create or set the 'Enabled' property
+    New-Item $path -Force | Out-Null
     New-ItemProperty -Path $path `
                      -Name 'Enabled' `
                      -Value $enabledValue `
                      -PropertyType 'DWord' `
                      -Force | Out-Null
                      
-    if ($enableOldProtocols) {
-        Write-Host "$version is Enabled."
-    } else {
-        Write-Host "$version is Disabled."
-    }
+    Write-Host "$version is $enabledValue."
 }
-
