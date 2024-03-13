@@ -1,4 +1,4 @@
-# Learn more at https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings?tabs=diffie-hellman
+# Learn more at https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings
 Set-StrictMode -Version Latest
 
 $base = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\'
